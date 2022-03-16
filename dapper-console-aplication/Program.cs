@@ -8,17 +8,17 @@ namespace dapper_console_aplication
 {
     class Program
     {
-        private const string CONNECTION_STRING = "Server=localhost,1433;Database=Blog;User ID=sa;Password=PASSWORD";
-        
+        private const string CONNECTION_STRING = "Server=ISAAC;Database=Blog;User ID=sa;Password=rosemara";
+
         static void Main(string[] args)
         {
             var connection = new SqlConnection(CONNECTION_STRING);
-            
+
             connection.Open();
             ReadUsers(connection);
-            ReadRoles(connection);
-            //ReadUser();
-            //CreateUser();
+            //ReadRoles(connection);
+            //ReadTags(connection);
+            CreateUser(connection);
             //UpdateUser();
             //DeleteUser();
             connection.Close();
@@ -26,28 +26,61 @@ namespace dapper_console_aplication
 
         public static void ReadUsers(SqlConnection connection)
         {
-            var repository = new UserRepository(connection);
-            var users = repository.Get();
-            
-            foreach (var user in users)
+            var repository = new Repository<User>(connection);
+            var items = repository.Get();
+
+            foreach (var item in items)
             {
-                Console.WriteLine(user.Name);
+                Console.WriteLine(item.Name);
+                foreach (var role in item.Roles)
+                {
+                    Console.WriteLine(role.Name);
+                }
             }
 
         }
-        
+
+        public static void CreateUser(SqlConnection connection)
+        {
+
+            var user = new User()
+            {
+                Email = "email@balta.io",
+                Bio = "Bio",
+                Image = "imagem",
+                Name = "Name",
+                PasswordHash = "hash",
+                Slug = "slug"
+            };
+            var repository = new Repository<User>(connection);
+            repository.Create(user);
+
+        }
+
         public static void ReadRoles(SqlConnection connection)
         {
-            var repository = new RoleRepository(connection);
-            var roles = repository.Get();
-          
-            foreach (var role in roles)
+            var repository = new Repository<Role>(connection);
+            var items = repository.Get();
+
+            foreach (var item in items)
             {
-                Console.WriteLine(role.Name);
+                Console.WriteLine(item.Name);
+            }
+
+
+        }
+
+
+        public static void ReadTags(SqlConnection connection)
+        {
+            var repository = new Repository<Tag>(connection);
+            var items = repository.Get();
+
+            foreach (var item in items)
+            {
+                Console.WriteLine(item.Name);
             }
 
         }
-        
-       
     }
-}
+    }
