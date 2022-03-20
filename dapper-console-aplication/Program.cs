@@ -8,33 +8,33 @@ namespace dapper_console_aplication
 {
     class Program
     {
-        private const string CONNECTION_STRING = "Server=ISAAC;Database=Blog;User ID=sa;Password=rosemara";
+        private const string CONNECTION_STRING = "Server=ISAAC;Database=Blog;User ID=sa;Password=YOURPASSWORD";
 
         static void Main(string[] args)
         {
             var connection = new SqlConnection(CONNECTION_STRING);
 
             connection.Open();
-            ReadUsers(connection);
+            ReadUsersWithRoles(connection);
             //ReadRoles(connection);
             //ReadTags(connection);
-            CreateUser(connection);
+            //CreateUser(connection);
             //UpdateUser();
             //DeleteUser();
             connection.Close();
         }
 
-        public static void ReadUsers(SqlConnection connection)
+        public static void ReadUsersWithRoles(SqlConnection connection)
         {
-            var repository = new Repository<User>(connection);
-            var items = repository.Get();
+            var repository = new UserRepository(connection);
+            var items = repository.GetWithRoles();
 
             foreach (var item in items)
             {
                 Console.WriteLine(item.Name);
                 foreach (var role in item.Roles)
                 {
-                    Console.WriteLine(role.Name);
+                    Console.WriteLine($" - {role.Name}");
                 }
             }
 
@@ -45,12 +45,12 @@ namespace dapper_console_aplication
 
             var user = new User()
             {
-                Email = "email@balta.io",
+                Email = "test2@balta.io",
                 Bio = "Bio",
                 Image = "imagem",
                 Name = "Name",
                 PasswordHash = "hash",
-                Slug = "slug"
+                Slug = "slug test"
             };
             var repository = new Repository<User>(connection);
             repository.Create(user);
