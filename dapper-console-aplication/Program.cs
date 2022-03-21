@@ -1,8 +1,6 @@
-﻿using System;
-using dapper_console_aplication.Models;
-using dapper_console_aplication.Repositories;
-using Dapper.Contrib.Extensions;
+﻿using dapper_console_aplication.Screens.TagScreens;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace dapper_console_aplication
 {
@@ -12,75 +10,59 @@ namespace dapper_console_aplication
 
         static void Main(string[] args)
         {
-            var connection = new SqlConnection(CONNECTION_STRING);
+            Database.Connection = new SqlConnection(CONNECTION_STRING);
 
-            connection.Open();
-            ReadUsersWithRoles(connection);
-            //ReadRoles(connection);
-            //ReadTags(connection);
-            //CreateUser(connection);
-            //UpdateUser();
-            //DeleteUser();
-            connection.Close();
+            Database.Connection.Open();
+            Load();
+
+            Console.ReadKey();
+
+            Database.Connection.Close();
         }
 
-        public static void ReadUsersWithRoles(SqlConnection connection)
-        {
-            var repository = new UserRepository(connection);
-            var items = repository.GetWithRoles();
+        private static void Load() {
+            Console.Clear();
+            Console.WriteLine("Meu Blog");
+            Console.WriteLine("-------------");
+            Console.WriteLine("O que deseja fazer?");
+            Console.WriteLine();
+            Console.WriteLine("1 - Gestão de usuário");
+            Console.WriteLine("2 - Gestão de perfil");
+            Console.WriteLine("3 - Gestão de categoria");
+            Console.WriteLine("4 - Gestão de tag");
+            Console.WriteLine("5 - Vincular perfil/usuário");
+            Console.WriteLine("6 - Vincular post/tag");
+            Console.WriteLine("7 - Relatórios");
+            Console.WriteLine();
+            Console.WriteLine();
+            var option = short.Parse(Console.ReadLine()!);
 
-            foreach (var item in items)
+            switch (option)
             {
-                Console.WriteLine(item.Name);
-                foreach (var role in item.Roles)
-                {
-                    Console.WriteLine($" - {role.Name}");
-                }
+                //case 1:
+                //    MenuUserScreen.Load();
+                //    break;
+                //case 2:
+                //    MenuUserScreen.Load();
+                //    break;
+                //case 3:
+                //    MenuUserScreen.Load();
+                //    break;
+                case 4:
+                    MenuTagScreen.Load();
+                    break;
+                //case 5:
+                //    MenuUserScreen.Load();
+                //    break;
+                //case 6:
+                //    MenuUserScreen.Load();
+                //    break;
+                //case 7:
+                //    MenuUserScreen.Load();
+                //    break;
+                default: Load(); break;
             }
-
         }
-
-        public static void CreateUser(SqlConnection connection)
-        {
-
-            var user = new User()
-            {
-                Email = "test2@balta.io",
-                Bio = "Bio",
-                Image = "imagem",
-                Name = "Name",
-                PasswordHash = "hash",
-                Slug = "slug test"
-            };
-            var repository = new Repository<User>(connection);
-            repository.Create(user);
-
-        }
-
-        public static void ReadRoles(SqlConnection connection)
-        {
-            var repository = new Repository<Role>(connection);
-            var items = repository.Get();
-
-            foreach (var item in items)
-            {
-                Console.WriteLine(item.Name);
-            }
-
-
-        }
-
-
-        public static void ReadTags(SqlConnection connection)
-        {
-            var repository = new Repository<Tag>(connection);
-            var items = repository.Get();
-
-            foreach (var item in items)
-            {
-                Console.WriteLine(item.Name);
-            }
-
-        }
+     
     }
     }

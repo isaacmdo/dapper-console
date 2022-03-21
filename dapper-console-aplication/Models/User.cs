@@ -24,5 +24,6 @@ namespace dapper_console_aplication.Models
         [Write(false)]
         public List<Role> Roles { get; set; }
 
+
     }
 }
